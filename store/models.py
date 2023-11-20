@@ -11,12 +11,12 @@ class Collection(models.Model):
 class Product(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
-    price = models.DecimalField(max_digits=6, decimal_places=2)
+    unit_price = models.DecimalField(max_digits=6, decimal_places=2)
     inventory = models.IntegerField()
     last_update = models.DateTimeField(auto_now=True)
     collection = models.ForeignKey(Collection, on_delete=models.PROTECT)
     # This many to many relationship is going to be create a product_set var in promtions
-    promotion = models.ManyToManyField(Promotion, )
+    promotion = models.ManyToManyField(Promotion)
 
 class Customer(models.Model):
 

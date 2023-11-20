@@ -7,9 +7,13 @@ class Promotion(models.Model):
 class Collection(models.Model):
     title = models.CharField(max_length=255)
     # product = models.ForeignKey('Product', on_delete=models.SET_NULL, null=True, related_name='+')
+    featured_product = models.ForeignKey(
+        'Product', on_delete=models.SET_NULL, null=True, related_name='+', blank=True)
+
 
 class Product(models.Model):
     title = models.CharField(max_length=255)
+    slug = models.SlugField()
     description = models.TextField()
     unit_price = models.DecimalField(max_digits=6, decimal_places=2)
     inventory = models.IntegerField()

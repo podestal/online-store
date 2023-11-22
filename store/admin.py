@@ -1,19 +1,12 @@
 from typing import Any
 from django.contrib import admin
-from django.contrib.contenttypes.admin import GenericTabularInline
 from django.db.models.aggregates import Count
 from django.db.models.query import QuerySet
 from django.http.request import HttpRequest
-from tags.models import TaggedItem
 from . import models
-
-class TagInLine(GenericTabularInline):
-    autocomplete_fields = ['tag']
-    model = TaggedItem
 
 @admin.register(models.Product)
 class ProductAdmin(admin.ModelAdmin):
-    inlines = [TagInLine]
     list_display = ['title', 'unit_price', 'inventory', 'collection']
     list_editable = ['unit_price']
     list_per_page = 10

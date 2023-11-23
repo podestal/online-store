@@ -11,8 +11,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.views import APIView
-from store.models import Product, Collection, OrderItem, Review
-from store.serializers import ProductSerializer, CollectionSerializer, ReviewSerializer
+from store.models import Product, Collection, OrderItem, Review, Cart, CartItem
+from store.serializers import ProductSerializer, CollectionSerializer, ReviewSerializer, CartSerializer, CartItemSerializer
 from store.filters import ProductFilter
 from store.pagination import DefaultPagination
 from django.db.models.aggregates import Count
@@ -196,3 +196,14 @@ class ReviewViewSet(ModelViewSet):
 
     def get_serializer_context(self):
         return {'product_id': self.kwargs['product_pk']}
+    
+class CartViewSet(ModelViewSet):
+    queryset = Cart.objects.all()
+    serializer_class = CartSerializer
+
+class CartItemViewSet(ModelViewSet):
+
+    serializer_class = CartItemSerializer
+
+    def get_queryset(self):
+        return CartItem.objects.filter(cart_id=self.kwargs['carts_pk'])

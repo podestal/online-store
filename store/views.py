@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.views import APIView
-from store.models import Product, Collection
+from store.models import Product, Collection, OrderItem
 from store.serializers import ProductSerializer, CollectionSerializer
 from django.db.models.aggregates import Count
 from django.db.models import Value
@@ -122,23 +122,25 @@ class ProductViewSet(ModelViewSet):
     queryset = Product.objects.select_related('collection').all()
     serializer_class = ProductSerializer
 
-    def delete(self, request, id):
-        product = get_object_or_404(Product, pk=id)
-        if product.orderitems.count() > 0:
-            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
-        product.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    def destroy(self, request, *args, **kwargs):
+        if OrderItem.objects.filter(product_id = kwargs.get('pk')).count() > 0:
+            return Response({'error': 'Product cannot be deleted'})
+        return super().destroy(request, *args, **kwargs)
+        # product = get_object_or_404(Product, pk=id)
+        # if product.orderitems.count() > 0:
+        #     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        # product.delete()
+        # return Response(status=status.HTTP_204_NO_CONTENT)
+
     
 class CollectionViewSet(ModelViewSet):
     queryset = Collection.objects.annotate(products_count=Count('products')).all()
     serializer_class = CollectionSerializer
 
-    def delete(self, request, pk):
-        collection = get_object_or_404(Collection, pk=pk)
-        if collection.products.count() > 0:
-            return Response({'error': 'Collection cannot be deleted'})
-        collection.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    def destroy(self, request, *args, **kwargs):
+        if Product.objects.filter(collection_id = kwargs.get('pk')).count() > 0:
+            return Response({'error': 'Product cannot be deleted'})
+        return super().destroy(request, *args, **kwargs)
 
 
 # class CollectionList(ListCreateAPIView):

@@ -5,6 +5,8 @@ from django.db.models.query import QuerySet
 from django.http.request import HttpRequest
 from . import models
 
+admin.site.register(models.OrderItem)
+
 @admin.register(models.Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ['title', 'unit_price', 'inventory', 'collection']

@@ -12,8 +12,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, action
 from rest_framework import status
 from rest_framework.views import APIView
-from store.models import Product, Collection, OrderItem, Review, Cart, CartItem, Customer
-from store.serializers import ProductSerializer, CollectionSerializer, ReviewSerializer, CartSerializer, CartItemSerializer, AddCartItemSerializer, UpdateCartItemSerializer, CustomerSerializer
+from store.models import Product, Collection, OrderItem, Review, Cart, CartItem, Customer, Order
+from store.serializers import ProductSerializer, CollectionSerializer, ReviewSerializer, CartSerializer, CartItemSerializer, AddCartItemSerializer, UpdateCartItemSerializer, CustomerSerializer, OrderSerializer
 from store.filters import ProductFilter
 from store.pagination import DefaultPagination
 from store.permissions import IsAdminOrReadOnly
@@ -247,3 +247,9 @@ class CustomerViewSet(ModelViewSet):
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data)
+        
+
+class OrderViewSet(ModelViewSet):
+
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer

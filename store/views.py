@@ -13,7 +13,7 @@ from rest_framework.decorators import api_view, action
 from rest_framework import status
 from rest_framework.views import APIView
 from store.models import Product, Collection, OrderItem, Review, Cart, CartItem, Customer, Order
-from store.serializers import ProductSerializer, CollectionSerializer, ReviewSerializer, CartSerializer, CartItemSerializer, AddCartItemSerializer, UpdateCartItemSerializer, CustomerSerializer, OrderSerializer
+from store.serializers import ProductSerializer, CollectionSerializer, ReviewSerializer, CartSerializer, CartItemSerializer, AddCartItemSerializer, UpdateCartItemSerializer, CustomerSerializer, OrderSerializer, CreateOrderSerializer
 from store.filters import ProductFilter
 from store.pagination import DefaultPagination
 from store.permissions import IsAdminOrReadOnly
@@ -253,6 +253,14 @@ class OrderViewSet(ModelViewSet):
 
     serializer_class = OrderSerializer
     permission_classes = [IsAuthenticated]
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return CreateOrderSerializer
+        return OrderSerializer
+
+    def get_serializer_context(self):
+        return {'user_id': self.request.user.id}
 
     def get_queryset(self):
         print('user', type(self.request))

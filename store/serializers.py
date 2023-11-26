@@ -139,9 +139,14 @@ class CreateOrderSerializer(serializers.Serializer):
 
     cart_id = serializers.UUIDField()
 
+    def validate_cart_id(self, cart_id):
+        if not Cart.objects.filter(pk=cart_id).exists():
+            raise serializers.ValidationError('No cart with the given ID exists')
+        return cart_id
+
     def save(self, **kwargs):
         with transaction.atomic():
-            cart_id = self.validated_data['cart_id']
+            cart_id = self.validate_cart_id(self.validated_data['cart_id'])
             user_id = self.context['user_id']
             (customer, created) = Customer.objects.get_or_create(user_id=user_id)
             order = Order.objects.create(customer = customer)
